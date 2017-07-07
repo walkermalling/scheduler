@@ -1,0 +1,38 @@
+{
+  "name": "scheduler",
+  "version": "1.0.0",
+  "description": "Scheduling App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/eslint/bin/eslint.js .",
+    "start": "./node_modules/eslint/bin/eslint.js . && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walkermalling/scheduler.git"
+  },
+  "author": "Walker Malling",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/walkermalling/scheduler/issues"
+  },
+  "homepage": "https://github.com/walkermalling/scheduler#readme",
+  "devDependencies": {
+    "eslint": "^4.1.1",
+    "eslint-config-airbnb": "^15.0.2",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "5.1.0",
+    "eslint-plugin-react": "^7.1.0"
+  },
+  "dependencies": {
+    "chalk": "^2.0.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.13",
+    "pg": "^6.4.0",
+    "ramda": "^0.24.1",
+    "ramda-fantasy": "^0.8.0"
+  }
+}
