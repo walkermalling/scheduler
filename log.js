@@ -16,6 +16,9 @@ const ensureType = (payload) => {
 };
 
 const addTime = (obj) => {
+  if (NODE_ENV !== 'production') {
+    return obj;
+  }
   if (obj && obj.time) {
     return obj;
   }
@@ -26,14 +29,17 @@ const format = (obj) => {
   if (NODE_ENV === 'production') {
     return JSON.stringify(obj);
   }
-  return JSON.stringify(obj, null, 2);
+  return JSON.stringify(obj);
 };
 
-const colorize = color => str => {
+const colorize = color => (str) => {
   if (NODE_ENV === 'production') {
     return str;
   }
-  return chalk[color](str);
+  if (chalk && chalk[color]) {
+    return chalk[color](str);
+  }
+  return str;
 };
 
 const log = color => compose(

@@ -1,53 +1,24 @@
 const Fantasy = require('ramda-fantasy');
 const ramda = require('ramda');
 const db = require('./postgres');
+const helpers = require('./helpers');
 const log = require('./log');
 
 const compose = ramda.compose;
-const map = ramda.map;
-const join = ramda.join;
-const tuplize = ramda.toPairs;
-const reduce = ramda.reduce;
 const head = ramda.head;
-const tail = ramda.tail;
-const append = ramda.append;
-const any = ramda.any;
+const curry = ramda.curry;
+const pathOr = ramda.pathOr;
 
 const Future = Fantasy.Future;
 
-const expandWhereClause = compose(
-  join(' AND '),
-  map(join(' = ')),
-  tuplize
-);
+const expandWhereClause = helpers.expandWhereClause;
+const expandColumns = helpers.expandColumns;
+const unzipTuples = helpers.unzipTuples;
+const makePredicates = helpers.makePredicates;
+const mergeOptions = helpers.mergeOptions;
+const validateQueryOptions = helpers.validateQueryOptions;
 
-const expandColumns = (columns) => {
-  if (columns && columns.length > 0) {
-    return join(', ', columns);
-  }
-  return '*';
-};
-
-const unzipKeyValueTuples = compose(
-  reduce(
-    (accum, tuple) => [
-      append(head(accum), head(tuple)),
-      append(tail(accum), tail(tuple))
-    ],
-    [[], []]
-  ),
-  tuplize
-);
-
-const zipKeyValueTuples = compose(
-  join(', '),
-  map(join(' = ')),
-  tuplize
-);
-
-// mergeOptions :: Object -> Object -> Object
-const mergeOptions = base => options => Object.assign({}, base, options);
-
+// getQueryHandler :: String a -> (e -> ()), (b -> ()) -> (e -> b) -> ()  
 const getQueryHandler = (tag, reject, resolve) => (error, results) => {
   if (error) {
     log.error({ message: 'error', error, tag });
@@ -59,35 +30,6 @@ const getQueryHandler = (tag, reject, resolve) => (error, results) => {
     log.error({ message: 'no results', tag });
     reject({ message: 'no results', tag });
   }
-};
-
-// validateQueryOptions :: Object -> Bool
-const validateQueryOptions = (options) => {
-  // every query must have at least an action and a table
-  if (!options || !options.action || !options.table) {
-    return false;
-  }
-
-  const anyAreNullOrUndefined = compose(
-    any(tuple => tail(tuple) === undefined || tail(tuple) === null),
-    tuplize
-  );
-  if (anyAreNullOrUndefined(options.where)) {
-    return false;
-  }
-
-  if (options.action === 'update') {
-    if (!options.values) {
-      return false;
-    }
-    // prevent accidentally updating every row in a table
-    // to update every row, include { where: true }
-    if (!options.where) {
-      return false;
-    }
-  }
-
-  return true;
 };
 
 // queryBuilder :: Object -> Future Error Object
@@ -108,20 +50,23 @@ const queryBuilder = options => Future((reject, resolve) => {
     const columns = expandColumns(options.columns);
     query = `SELECT ${columns} FROM ${table} WHERE ${where}`;
   }
+
   if (action === 'insert') {
-    const insert = unzipKeyValueTuples(options.values);
-    query = `INSERT INTO ${table} ${insert.keys} VALUES ${insert.values}`;
+    const insert = unzipTuples(options.values);
+    query = `INSERT INTO ${table} (${insert.keys.join(', ')}) VALUES (${insert.values.join(', ')})`;
   }
+
   if (action === 'update') {
-    const set = zipKeyValueTuples(options.values);
+    const set = makePredicates(options.values);
     query = `UPDATE ${table} SET ${set} WHERE ${where}`;
   }
+
   if (action === 'delete') {
     query = `DELETE FROM ${table} WHERE ${where}`;
   }
 
   const handler = getQueryHandler(action, reject, resolve);
-
+  log.verbose({ query });
   db.query(query, [], handler);
 });
 
@@ -153,6 +98,7 @@ const calls = compose(
 );
 
 // schedule :: Object -> Future Error Object
+// given a Pioneer Id, lookup the coach, and get the coache's schedule
 const schedule = options => Future((reject, resolve) => {
   const query = `SELECT c.id as id, c.pioneer_id, c.coach_id, c.time_start
              FROM calls as c
@@ -162,4 +108,25 @@ const schedule = options => Future((reject, resolve) => {
   db.query(query, [], handler);
 });
 
-module.exports = { pioneers, coaches, calls, schedule };
+// :: Object -> Object -> Future Error ()
+const validateCoach = options => result => Future((reject, resolve) => {
+  const coachIsMatch = curry((pioneerId, coachId, pioneerRecord) =>
+    pioneerRecord.id === pioneerId && pioneerRecord.coach_id === coachId);
+
+  const isMatch = compose(
+    coachIsMatch(
+      options.values.pioneer_id,
+      options.values.coach_id
+    ),
+    head,
+    pathOr([], ['rows'])
+  );
+
+  if (isMatch(result)) {
+    resolve(options);
+  } else {
+    reject(false);
+  }
+});
+
+module.exports = { pioneers, coaches, calls, schedule, validateCoach };
