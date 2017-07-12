@@ -1,5 +1,5 @@
 const ramda = require('ramda');
-const log = require('./log');
+// const log = require('./log');
 
 const compose = ramda.compose;
 const map = ramda.map;
@@ -11,7 +11,7 @@ const any = ramda.any;
 const last = ramda.last;
 
 const coachAndPioneerMatch = pioneerId => coachId => pioneerRecord =>
-      pioneerRecord.id === pioneerId && pioneerRecord.coach_id === coachId;
+  pioneerRecord.id === pioneerId && pioneerRecord.coach_id === coachId;
 
 // makePredicates :: Object -> String
 const makePredicates = compose(
