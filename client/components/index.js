@@ -1,8 +1,8 @@
-import Home from './home';
-import Pioneer from './pioneer';
-import Coach from './coach';
+import Home from './home.jsx';
+import Pioneer from './pioneer.jsx';
+import Coach from './coach.jsx';
 
-export {
+export default {
   Home,
   Pioneer,
   Coach,

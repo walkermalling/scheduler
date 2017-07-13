@@ -1,42 +1,30 @@
+const express = require('express');
 const ramda = require('ramda');
 const actions = require('./actions');
 const log = require('./log');
 
-const pick = ramda.pick;
+const pathOr = ramda.pathOr;
+const getRows = pathOr([], ['rows']);
 
-const getRows = pick(['rows']);
+const app = express();
 
-const api = {
-  getPioneer: (options) => {
-    actions.pioneers({ action: 'select', where: options.where })
-      .fork(log.error, log.info);
-  },
-  getCoach: (options) => {
-    actions.coaches({ action: 'select', where: options.where })
-      .map(getRows)
-      .fork(log.error, log.info);
-  },
-  getCalls: (options) => {
-    actions.calls({ action: 'select', where: options.where })
-      .map(getRows)
-      .fork(log.error, log.info);
-  },
-  getSchedule: (options) => {
-    actions.schedule({ action: 'select', where: options.where })
-      .map(getRows)
-      .fork(log.error, log.info);
-  },
-  scheduleCall: (options) => {
-    actions.pioneers({
-      where: {
-        id: options.values.pioneer_id,
-      },
-      action: 'select'
-    })
-      .chain(actions.validateCoach(options))
-      .chain(actions.calls)
-      .fork(log.error, log.info);
-  },
-};
+app.get('/:table/:id?', (req, res) => {
+  const values = {};require('dotenv').config({ silent: true });
 
-module.exports = api;
+  let where = true;
+  if (req.params.id) {
+    where = { id: req.params.id };
+  }
+  
+  log.verbose({ message: 'request', params: req.params });
+  
+  actions.query('select', req.params.table, values, where)
+    .fork(
+      err => res.status(500).send(err),
+      result => res.json(getRows(result))
+    );
+});
+
+app.listen(4000, () => { log.info('API Service listening on 4000') });
+
+
