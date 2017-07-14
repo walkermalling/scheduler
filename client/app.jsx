@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import { Home, Pioneer, Coach } from '../components/index';
+import Home from './containers/home.jsx';
 
 const App = () => (
   <Router>
@@ -14,8 +14,6 @@ const App = () => (
       <hr />
 
       <Route exact path="/" component={Home} />
-      <Route path="/pioneer" component={Pioneer} />
-      <Route path="/coach" component={Coach} />
     </div>
   </Router>
 );

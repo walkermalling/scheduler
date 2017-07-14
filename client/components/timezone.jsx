@@ -1,16 +1,11 @@
 import React from 'react';
 
-class Timezone extends React.component {
-  componentDidMount() {
-    const { dispatch, detectTimezone } = this.props;
-    dispatch(detectTimezone());
-  }
-  render() {
-    return (
-      <div>{this.props.timezone}</div>
-    );
-  }
-}
+const Timezone = ({ timezone }) => {
+  console.log(timezone);
+  return (
+    <div>{timezone}</div>
+  );
+};
 
 export default Timezone;
 
