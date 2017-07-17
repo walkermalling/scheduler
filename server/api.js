@@ -1,3 +1,4 @@
+require('dotenv').config({ silent: true });
 const express = require('express');
 const ramda = require('ramda');
 const actions = require('./actions');
@@ -8,16 +9,22 @@ const getRows = pathOr([], ['rows']);
 
 const app = express();
 
-app.get('/:table/:id?', (req, res) => {
-  const values = {};require('dotenv').config({ silent: true });
+app.get('/api/:table/:id?', (req, res) => {
+  res.set({
+    'Access-Control-Allow-Origin': '*',
+  });
+
+  log.verbose(req.params);
+
+  const values = {};
 
   let where = true;
   if (req.params.id) {
     where = { id: req.params.id };
   }
-  
+
   log.verbose({ message: 'request', params: req.params });
-  
+
   actions.query('select', req.params.table, values, where)
     .fork(
       err => res.status(500).send(err),
@@ -25,6 +32,4 @@ app.get('/:table/:id?', (req, res) => {
     );
 });
 
-app.listen(4000, () => { log.info('API Service listening on 4000') });
-
-
+app.listen(4000, () => log.info('API Service listening on 4000'));

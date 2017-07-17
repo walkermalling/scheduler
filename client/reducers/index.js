@@ -1,8 +1,12 @@
 export default (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_PIONEER':
+    case 'SET_PIONEER':
       return Object.assign({}, state, {
-        pioneers: [...state.pioneers, action.payload]
+        pioneer: action.payload
+      });
+    case 'SET_PIONEERS':
+      return Object.assign({}, state, {
+        pioneers: action.payload
       });
     case 'DETECT_TIMEZONE':
       return Object.assign({}, state, {

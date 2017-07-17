@@ -3,6 +3,7 @@ const log = require('./log');
 
 const config = {
   max: 10,
+  database: 'arivale',
   idleTimeoutMillis: 30000,
 };
 
