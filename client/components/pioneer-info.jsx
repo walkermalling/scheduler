@@ -1,12 +1,24 @@
 import React from 'react';
 import moment from 'moment-timezone';
+import { compose, find } from 'ramda';
 
 const formatTime = (timestamp, timezone) => moment(timestamp)
-      .tz(timezone).format('dddd, MMMM Do YYYY, h:mm a');
+  .tz(timezone).format('dddd, MMMM Do YYYY, h:mm a');
 
+// nextCall :: Integer -> [Calls] -> Call
+// return pioneer's next scheduled call, assumes Calls are sorted chronologically
+const findNextCall = pioneerId => compose(
+  find(call => call.pioneer_id === pioneerId)
+);
 
-
-const PioneerInfo = ({ pioneer, nextCall, timezone }) => {
+const PioneerInfo = ({ pioneer, schedule, timezone }) => {
+  let nextCall = null;
+  if (pioneer && schedule) {
+    const match = findNextCall(pioneer.id)(schedule);
+    if (match) {
+      nextCall = formatTime(match.time_start, timezone);
+    }
+  }
   if (pioneer) {
     return (
       <div>
@@ -25,15 +37,14 @@ const PioneerInfo = ({ pioneer, nextCall, timezone }) => {
               <td>{pioneer.id}</td>
               <td>{pioneer.tz}</td>
               <td>{pioneer.coach_id}</td>
-              <td>{nextCall && formatTime(nextCall.time_start, timezone)}</td>
+              <td>{nextCall}</td>
             </tr>
           </tbody>
         </table>
       </div>
     );
-  } else {
-    return (<p>No pioneer data</p>);
   }
+  return (<p>No pioneer data</p>);
 };
 
 export default PioneerInfo;

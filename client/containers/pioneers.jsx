@@ -35,11 +35,28 @@ class Pioneers extends React.Component {
     return (
       <div>
         <h2>Pioneer</h2>
-        <ul>
-          { pioneers.map(p => (
-            <li key={p.id} ><Link to={`/pioneer/${p.id}`} >{p.id}</Link></li>
-          ))}
-        </ul>
+        <table className="pure-table">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Coach</th>
+              <th>Timezone</th>
+              <th>Schedule</th>
+            </tr>
+          </thead>
+          <tbody>
+            { pioneers.map(p => (
+              <tr key={`id_${p.id}`}>
+                <td>{p.id}</td>
+                <td>{p.name}</td>
+                <td>{p.coach_id}</td>
+                <td>{p.tz}</td>
+                <td><Link to={`/pioneer/${p.id}`} >Edit Schedule</Link></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }

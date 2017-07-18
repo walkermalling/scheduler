@@ -8,6 +8,11 @@ export const setPioneers = pioneers => ({
   payload: pioneers,
 });
 
+export const setCoaches = coaches => ({
+  type: 'SET_COACHES',
+  payload: coaches,
+});
+
 export const setCoachSchedule = schedule => ({
   type: 'SET_COACH_SCHEDULE',
   payload: schedule,

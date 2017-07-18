@@ -28,9 +28,8 @@ const CoachSchedule = ({ schedule, timezone, display }) => {
         </tbody>
       </table>
     );
-  } else {
-    return (<p></p>);
   }
+  return (</div>);
 };
 
 export default CoachSchedule;

@@ -26,6 +26,13 @@ const expandWhereClause = compose(
   tuplize
 );
 
+const escapeTupleString = tuple => {
+  if (typeof tuple[1] === 'string') {
+    return [tuple[0], `\'${tuple[1]}\'`];
+  }
+  return tuple;
+};
+
 // unzipTuples :: Object -> Object
 // create two arrays, one for keys, one for values, but strictly ordered
 const unzipTuples = compose(
@@ -36,6 +43,7 @@ const unzipTuples = compose(
     }),
     { keys: [], values: [] }
   ),
+  map(escapeTupleString),
   tuplize
 );
 

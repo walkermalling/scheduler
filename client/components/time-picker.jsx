@@ -12,30 +12,38 @@ const checkAvailable = (hour, date, timezone, schedule) => {
   return matchSlot(schedule);
 };
 
-const getButtonClass = (hour, date, timezone, schedule, pioneer) => {
-  const matchingCall = checkAvailable(hour, date, timezone, schedule);
-  if (!matchingCall) {
-    return 'pure-button';
-  } else if (matchingCall && matchingCall.pioneer_id === pioneer.id) {
-    return 'pure-button pure-button-primary';
+const getButtonClass = (match, own) => {
+  if (match) {
+    if (own) {
+      return 'pure-button pure-button-primary';
+    }
+    return 'pure-button pure-button-disabled';
   }
-  return 'pure-button pure-button-disabled';
+  return 'pure-button';
 };
 
-const TimePicker = ({ date, schedule, timezone, setTime, pioneer }) => {
+const TimePicker = ({ date, schedule, timezone, setTime, pioneer, cancelExistingCall }) => {
   if (date && schedule && timezone && pioneer) {
     return (
-      <div className="pure-u-1-2" style={{ margin: '1em' }}>
-        <h3 style={{ margin: 0}}>Available Times</h3>
-        {[9, 10, 11, 12, 13, 14, 15, 16, 17].map(hour => (
-          <button
-            key={`hour_${hour}}`}
-            onClick={() => setTime(hour)}
-            style={{ clear: 'both', display: 'block' }}
-            className={getButtonClass(hour, date, timezone, schedule, pioneer)}
-          >
-            {hour}:00
-          </button>))
+      <div style={{ float: 'left', margin: '0 0 0 1em' }}>
+        <h3 style={{ margin: 'none' }}>Available Times</h3>
+        {[9, 10, 11, 12, 13, 14, 15, 16, 17].map((hour) => {
+          const match = checkAvailable(hour, date, timezone, schedule);
+          const isOwn = match && match.pioneer_id === pioneer.id;
+          return (
+            <button
+              key={`hour_${hour}}`}
+              onClick={() => {
+                if (isOwn) {
+                  cancelExistingCall(match);
+                } else {
+                  setTime(hour);
+                }
+              }}
+              style={{ clear: 'both', display: 'block', margin: '0 0 .1em 0' }}
+              className={getButtonClass(match, isOwn)}
+            >{hour}:00</button>);
+        })
         }
       </div>
     );

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import Home from './containers/home.jsx';
 import Pioneer from './containers/pioneer.jsx';
 import Pioneers from './containers/pioneers.jsx';
+import Coaches from './containers/coaches.jsx';
 
 const App = () => (
   <Router>
@@ -20,6 +21,7 @@ const App = () => (
         <Route exact path="/pioneer/:id" component={Pioneer} />
         <Route exact path="/pioneer" component={Pioneers} />
       </Switch>
+      <Route exact path="/coach" component={Coaches} />
     </div>
   </Router>
 );

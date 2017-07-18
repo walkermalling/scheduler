@@ -18,7 +18,8 @@ const queryBuilder = (action, table, values, where) => {
   }
 
   if (action === 'delete') {
-    return `DELETE FROM ${table} WHERE ${where}`;
+    const whereClause = helpers.expandWhereClause(where);
+    return `DELETE FROM ${table} WHERE ${whereClause}`;
   }
 
   return false;
