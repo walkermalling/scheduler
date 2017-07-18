@@ -1,0 +1,96 @@
+* Intro
+** Stack
+
+Postgress + Node.js + Redux & React
+
+Webpack for client side bundling.
+
+** Install
+
+Standard node setup:
+
+$ =nvm use=
+$ =npm install=
+$ =npm run build=
+
+The application consists of an api and an rendering app running on two different ports.  Start these separately:
+
+$ =node server/api=
+$ =node server/app=
+
+See below for postgress configuration.
+
+For development use webpack's hot loader:
+
+$ =npm run dev= 
+
+** Use
+
+The Scheduler demo does not implement any security as through =jwts= based user session or logins.
+
+Landing on the rendering app will present links to explore "Pioneer" records and "Coach" records.
+
+Navigate to the =/pioneer= page to explore pioneers; select a pioneer to schedule a call.
+
+** Feature
+- Calls may only be scheduled with the coach associated with the pioneer in question
+- Timezone is detected by the browser (stored as UTC in postgres)
+- Existing scheduled calls are indicated in the date picker; selecting one will present an option to cancel it
+- Other pioneers' existing scheduled calls take up time slots are appear unavaiable in the scheduling interface
+- Scheduled calls are constrained in posgress, unique to a coach and timestamp
+- Call records are constrained to associate with existing coaches and pioneers (can't create a call with nonexistent coach/pioneer)
+
+** To Do
+- Tighter constraints on database and streamlined queries
+  - Example: fetch a pioneer, coach associated with him/her, and coach's upcoming schedule
+- Flexibility switching coaches
+- Flexibility adjusting call duration
+- Flexibility defining time window for scheduling calls
+  - Currently assumes Monday through Friday, 9 to 5
+  - Bug: currently calculates avialble times in the user's timezone, but should be constrained to working hours of coach
+- Linting and Testing
+  - Tests and linting is setup, but needs maintenance
+
+* Database Setup
+
+** Table Schemas
+
+#+begin_src sql
+
+create table pioneers (
+  id serial NOT NULL PRIMARY KEY,
+  name varchar(100),
+  tz varchar(50),
+  coach_id integer
+);
+
+create table coaches (
+  id serial NOT NULL PRIMARY KEY,
+  tz varchar(50),
+  name varchar(100)
+);
+
+create table calls(
+  id serial NOT NULL PRIMARY KEY,
+  pioneer_id integer REFERENCES pioneers(id),
+  coach_id integer REFERENCES coaches(id),
+  time_start timestamp,
+  duration interval,
+  pioneer_tz varchar(50),
+  coach_tz varchar(50),
+  UNIQUE (coach_id, timestamp)
+);
+
+#+end_src
+** Start Postgres with bigsql
+
+Start postgres; opens up port =5432=
+
+$ =bigsql/pgc start pg96=
+
+Invoke the cli =psql= with the name of the database:
+
+$ =psql arivale= 
+
+NOTE: Make sure that node is correctly drafting the name of the database you're connecting to from ENV variables.
+
