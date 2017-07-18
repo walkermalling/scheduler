@@ -30,7 +30,7 @@ const query = (action, table, values, where) => Future((reject, resolve) => {
   });
 });
 
-// schedule :: Object -> Future
+// schedule :: Integer -> Future
 // given a Pioneer Id, lookup the coach, and get the coache's schedule
 const getSchedule = pioneerId => Future((reject, resolve) => {
   const queryString = `SELECT c.id as id, c.pioneer_id, c.coach_id, c.time_start

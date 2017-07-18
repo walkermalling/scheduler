@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment-timezone';
 import Timezone from '../components/timezone.jsx';
-import { detectTimezone } from '../actions';
+import { detectTimezone } from '../dispatch';
 
 const mapStateToProps = state => ({
   pioneers: state.pioneers,

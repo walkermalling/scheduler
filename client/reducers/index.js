@@ -8,6 +8,10 @@ export default (state = {}, action) => {
       return Object.assign({}, state, {
         pioneers: action.payload
       });
+    case 'SET_COACH_SCHEDULE':
+      return Object.assign({}, state, {
+        coachSchedule: action.payload
+      });
     case 'DETECT_TIMEZONE':
       return Object.assign({}, state, {
         timezone: action.payload

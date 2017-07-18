@@ -23,6 +23,10 @@ app.get('/api/:table/:id?', (req, res) => {
     where = { id: req.params.id };
   }
 
+  if (req.query) {
+    where = Object.assign({}, where, req.query);
+  }
+
   log.verbose({ message: 'request', params: req.params });
 
   actions.query('select', req.params.table, values, where)

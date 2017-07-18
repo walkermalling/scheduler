@@ -21,6 +21,11 @@ module.exports = {
           presets: ['env'],
         }
       },
+      {
+        test: /\.css$/,
+        
+        loader: 'css-loader',
+      }
     ]
   },
   plugins: [

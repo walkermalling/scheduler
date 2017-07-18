@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setPioneers } from '../actions';
+import { setPioneers } from '../dispatch';
 import { Link } from 'react-router-dom';
 import 'whatwg-fetch';
 
