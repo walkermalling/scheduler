@@ -26,9 +26,13 @@ const expandWhereClause = compose(
   tuplize
 );
 
-const escapeTupleString = tuple => {
+// :: [a, b] -> [a, c]
+// escape strings for sql queries
+const escapeTupleString = (tuple) => {
   if (typeof tuple[1] === 'string') {
+    /* eslint-disable no-useless-escape */
     return [tuple[0], `\'${tuple[1]}\'`];
+    /* eslint-enable no-useless-escape */
   }
   return tuple;
 };
