@@ -1,10 +1,8 @@
 import React from 'react';
 
-const Timezone = ({ timezone }) => {
-  return (
-    <div>{timezone}</div>
-  );
-};
+const Timezone = ({ timezone }) => (
+  <div>Your current timezone is {timezone}</div>
+);
 
 export default Timezone;
 

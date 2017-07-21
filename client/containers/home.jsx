@@ -24,6 +24,7 @@ class Home extends React.Component {
     return (
       <div>
         <h2>Home</h2>
+        <h3>Welcome to our Scheduler!</h3>
         <Timezone timezone={timezone} />
       </div>
     );
