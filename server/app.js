@@ -10,4 +10,4 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve('./dist/index.html'));
 });
 
-app.listen(3000, () => { log.info('APP listening on 3000') });
+app.listen(3000, () => { log.info('APP listening on 3000'); });

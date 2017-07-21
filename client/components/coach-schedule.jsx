@@ -23,13 +23,13 @@ const CoachSchedule = ({ schedule, timezone, display }) => {
                   <td>{call.pioneer_id}</td>
                 </tr>);
             }
-            return (<tr/>);
+            return (<tr />);
           })}
         </tbody>
       </table>
     );
   }
-  return (<div></div>);
+  return (<div />);
 };
 
 export default CoachSchedule;
