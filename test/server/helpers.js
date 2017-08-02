@@ -11,7 +11,11 @@ describe('helpers', () => {
       const result = helpers.unzipTuples(mockValues);
       assert.equal(typeof result, 'object');
       for (let i = 0; i < result.keys.length; i += 1) {
-        assert.equal(mockValues[result.keys[i]], result.values[i]);
+        if (typeof result.values[i] === 'string') {
+          assert.equal(`\'${mockValues[result.keys[i]]}\'`, result.values[i]);
+        } else {
+          assert.equal(mockValues[result.keys[i]], result.values[i]);
+        }
       }
     });
   });
@@ -64,10 +68,10 @@ describe('helpers', () => {
       };
       const result = helpers.expandColumns(mockCols);
       assert.equal(result, 'id, pioneer_id, coach_id, time_start');
-      
+
       const result2 = helpers.expandColumns([]);
       assert.equal(result2, '*');
-      
+
       const result3 = helpers.expandColumns();
       assert.equal(result3, '*');
     });
@@ -85,7 +89,7 @@ describe('helpers', () => {
     it('should interpret no/unusable arg into *', () => {
       const result1 = helpers.expandColumns({});
       assert.equal(result1, '*');
-      
+
       const result2 = helpers.expandColumns();
       assert.equal(result2, '*');
 

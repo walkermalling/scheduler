@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment-timezone';
-import { find, compose, map, } from 'ramda';
+import { find } from 'ramda';
 
 // :: Hour -> Date -> Timezone -> [Call] -> Boolean
 const checkAvailable = (hour, date, timezone, schedule) => {
@@ -12,6 +12,7 @@ const checkAvailable = (hour, date, timezone, schedule) => {
   return matchSlot(schedule);
 };
 
+// :: Object | undefined -> Boolean -> String
 const getButtonClass = (match, own) => {
   if (match) {
     if (own) {
@@ -48,7 +49,7 @@ const TimePicker = ({ date, schedule, timezone, setTime, pioneer, cancelExisting
       </div>
     );
   }
-  return (<p/>);
+  return (<p />);
 };
 
 export default TimePicker;
